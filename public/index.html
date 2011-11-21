@@ -16,7 +16,7 @@
       self.canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
       //getting the data for earth
       $.get("/pop.json", function(data) {
-        data = data[2][1];
+        // data = data[2][1];
         for (var i=0; i+3<data.length; i+=3)
           //Adding the earth objects
           self.canvasStatic.addObj(new Circle(self.multiplier*(180 + data[i+1]),
@@ -27,7 +27,7 @@
 
       //getting the data for the heat points
       $.get(heatData, function(data) {
-        data = data[2][1];
+        // data = data[2][1];
         setInterval(function() {
           var item = 3 * self.item++;
           if (item+3 > data.length)
