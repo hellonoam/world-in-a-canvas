@@ -4,20 +4,30 @@
   <script type="text/javascript"
      src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script type="text/javascript">
-  
-    var  Controller = function() {
+
+    //controls the two canvases. Decides when to add objects to them
+    var  Controller = function(heatData) {
       var self = this;
       self.item = 0;
-      self.multiplier = 3;
+      self.multiplier = 3; 
+      //static canvas doesn't get refreshed automatically. This one is used for the earth background.
       var canvasStatic = new Canvas(false, $("#canvas1"), self.multiplier);
+      //This one is used for the heat points
       var canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
+      //getting the data for earth
       $.get("/pop.json", function(data) {
         data = data[2][1];
         for (var i=0; i+3<data.length; i+=3)
+          //Adding the earth objects
           canvasStatic.addObj(new Circle(self.multiplier*(180 + data[i+1]),
                                    self.multiplier*(90 - data[i]), 1, "rgba(0, 100, 200, 1)"));
+        //refreshing the earth convas, just needs to do this once
         canvasStatic.refresh();
+      });
 
+      //getting the data for the heat points
+      $.get(self.heatData, function(data) {
+        data = data[2][1];
         setInterval(function() {
           var item = 3 * self.item++;
           if (item+3 > data.length)
@@ -32,13 +42,19 @@
             color = "pink";
           else
             color = "red";
+          //Adds a heat point
           canvasDynamic.addObj(new CircleDown
             (self.multiplier*(180 + data[item+1]),
              self.multiplier*(90 - data[item]), 7, color, 0.95));
         }, 30);
-      })
+
+      });
     }
 
+    //The canvas class
+    // - autoRefresh - whether the canvas should autorefresh itself
+    // - canvas - the canvas object
+    // - multiplier - the multiplier of the earth coordinates
     var Canvas = function(autoRefresh, canvas, multiplier) {
       var self = this;
       this.canvas = canvas;
@@ -69,12 +85,18 @@
 
     Canvas.prototype.drawObjs = function() {
       var self = this;
+      var i = 0;
+      var toBeRemoved = [];
       self.objs.forEach(function(value) {
         if (value.disappear)
-          ;
+          toBeRemoved.push(i);
         else
           value.draw(self.ctx);
-      })
+        i++;
+      });
+      toBeRemoved.forEach(function(value) {
+        self.objs.slice(value, 1);
+      });
     };
 
     Canvas.prototype.clear = function() {
@@ -96,7 +118,7 @@
       ctx.fill();
     }
 
-
+    //CircleDown is a circle which decreases in size as time goes by.
     var CircleDown = function(x, y, radius, style, decreaseRate) {
       this.circle = new Circle(x, y, radius, style);
       this.disappear = false;
@@ -105,19 +127,17 @@
 
     CircleDown.prototype.draw = function(ctx) {
       this.circle.radius *= this.decreaseRate;
-      // console.log(this.circle.radius)
       if (this.circle.radius < 2.5)
         this.disappear = true;
       this.circle.draw(ctx);
     };
 
     
-    $(document).ready(function() { cont = new Controller(); });
+    $(document).ready(function() { cont = new Controller("/pop.json"); });
   </script>
   <title>maps!</title>
 </head>
 <body style="background-color: black">
-  yo!
   <canvas style="position: absolute" id="canvas1"></canvas>
   <canvas id="canvas2"></canvas>
 </body>
