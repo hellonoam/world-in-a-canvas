@@ -26,7 +26,7 @@
       });
 
       //getting the data for the heat points
-      $.get(self.heatData, function(data) {
+      $.get(heatData, function(data) {
         data = data[2][1];
         setInterval(function() {
           var item = 3 * self.item++;
@@ -95,7 +95,7 @@
         i++;
       });
       toBeRemoved.forEach(function(value) {
-        self.objs.slice(value, 1);
+        self.objs.splice(value, 1);
       });
     };
 
