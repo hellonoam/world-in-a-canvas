@@ -11,18 +11,18 @@
       self.item = 0;
       self.multiplier = 3; 
       //static canvas doesn't get refreshed automatically. This one is used for the earth background.
-      var canvasStatic = new Canvas(false, $("#canvas1"), self.multiplier);
+      self.canvasStatic = new Canvas(false, $("#canvas1"), self.multiplier);
       //This one is used for the heat points
-      var canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
+      self.canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
       //getting the data for earth
       $.get("/pop.json", function(data) {
         data = data[2][1];
         for (var i=0; i+3<data.length; i+=3)
           //Adding the earth objects
-          canvasStatic.addObj(new Circle(self.multiplier*(180 + data[i+1]),
+          self.canvasStatic.addObj(new Circle(self.multiplier*(180 + data[i+1]),
                                    self.multiplier*(90 - data[i]), 1, "rgba(0, 100, 200, 1)"));
         //refreshing the earth convas, just needs to do this once
-        canvasStatic.refresh();
+        self.canvasStatic.refresh();
       });
 
       //getting the data for the heat points
@@ -43,7 +43,7 @@
           else
             color = "red";
           //Adds a heat point
-          canvasDynamic.addObj(new CircleDown
+          self.canvasDynamic.addObj(new CircleDown
             (self.multiplier*(180 + data[item+1]),
              self.multiplier*(90 - data[item]), 7, color, 0.95));
         }, 30);
