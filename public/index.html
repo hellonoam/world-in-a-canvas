@@ -16,6 +16,8 @@
       //This one is used for the heat points
       self.canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
 
+      // $("body").bind("getNewHeatPoints", $.proxy(self, "getHeatPoints"));
+
       self.getWorld();
       self.getHeatPoints();
     };
@@ -44,7 +46,7 @@
           var item = 3 * self.item++;
           if (item+3 > data.length) {
             //This is triggered when the data that was fetched has ended and new data is needed.
-            self.getHeatPoints();
+            // $("body").trigger("getNewHeatPoints");
             return;
           }
           var colorId = Math.min(data[item+2]*1000, 10);
