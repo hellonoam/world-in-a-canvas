@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script type="text/javascript">
+  
+    var  Controller = function() {
+      var self = this;
+      self.item = 0;
+      self.multiplier = 3;
+      var canvasStatic = new Canvas(false, $("#canvas1"), self.multiplier);
+      var canvasDynamic = new Canvas(true, $("#canvas2"), self.multiplier);
+      $.get("/pop.json", function(data) {
+        data = data[2][1];
+        for (var i=0; i+3<data.length; i+=3)
+          canvasStatic.addObj(new Circle(self.multiplier*(180 + data[i+1]),
+                                   self.multiplier*(90 - data[i]), 1, "rgba(0, 100, 200, 1)"));
+        canvasStatic.refresh();
+
+        setInterval(function() {
+          var item = 3 * self.item++;
+          if (item+3 > data.length)
+            return;
+          var colorId = Math.min(data[item+2]*1000, 10);
+          var color;
+          if (colorId < 2)
+            color = "yellow";
+          else if (colorId < 5)
+            color = "orange";
+          else if (colorId < 7)
+            color = "pink";
+          else
+            color = "red";
+          canvasDynamic.addObj(new CircleDown
+            (self.multiplier*(180 + data[item+1]),
+             self.multiplier*(90 - data[item]), 7, color, 0.95));
+        }, 30);
+      })
+    }
+
+    var Canvas = function(autoRefresh, canvas, multiplier) {
+      var self = this;
+      this.canvas = canvas;
+      this.multiplier = multiplier;
+      this.width = 360*this.multiplier;
+      this.height = 180*this.multiplier;
+      this.canvas.attr("width", this.width);
+      this.canvas.attr("height", this.height);
+      this.ctx = this.canvas[0].getContext("2d");
+      this.objs = [];
+
+      if (!autoRefresh)
+        return;
+
+      setInterval(function() {
+        self.refresh();
+      }, 50);
+    };
+
+    Canvas.prototype.addObj = function(obj) {
+      this.objs.push(obj);
+    }
+
+    Canvas.prototype.refresh = function() {
+      this.clear();
+      this.drawObjs();
+    };
+
+    Canvas.prototype.drawObjs = function() {
+      var self = this;
+      self.objs.forEach(function(value) {
+        if (value.disappear)
+          ;
+        else
+          value.draw(self.ctx);
+      })
+    };
+
+    Canvas.prototype.clear = function() {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+    };
+
+    var Circle = function(x, y, radius, style) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.style = style;
+    }
+
+    Circle.prototype.draw = function(ctx) {
+      ctx.fillStyle = this.style;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+
+    var CircleDown = function(x, y, radius, style, decreaseRate) {
+      this.circle = new Circle(x, y, radius, style);
+      this.disappear = false;
+      this.decreaseRate = decreaseRate;
+    };
+
+    CircleDown.prototype.draw = function(ctx) {
+      this.circle.radius *= this.decreaseRate;
+      // console.log(this.circle.radius)
+      if (this.circle.radius < 2.5)
+        this.disappear = true;
+      this.circle.draw(ctx);
+    };
+
+    
+    $(document).ready(function() { cont = new Controller(); });
+  </script>
+  <title>maps!</title>
+</head>
+<body style="background-color: black">
+  yo!
+  <canvas style="position: absolute" id="canvas1"></canvas>
+  <canvas id="canvas2"></canvas>
+</body>
+</html>
