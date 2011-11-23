@@ -18,8 +18,9 @@
 
       // $("body").bind("getNewHeatPoints", $.proxy(self, "getHeatPoints"));
 
-      self.getWorld();
       self.getHeatPoints();
+      // self.getWorld();
+      $("body").bind("objRemoved", self.canvasStatic.drawObjsFromVars);
     };
 
     //Gets the world data points and draws them on the canvas.
@@ -51,11 +52,11 @@
           }
           var colorId = Math.min(data[item+2]*1000, 10);
           var color;
-          if (colorId < 2)
+          if (colorId < 1)
             color = "yellow";
-          else if (colorId < 5)
+          else if (colorId < 6)
             color = "orange";
-          else if (colorId < 7)
+          else if (colorId < 10)
             color = "pink";
           else
             color = "red";
@@ -63,7 +64,7 @@
           self.canvasDynamic.addObj(new CircleDown
             (self.multiplier*(180 + data[item+1]),
              self.multiplier*(90 - data[item]), 7, color, 0.95));
-        }, 30);
+        }, 1);
 
       });
     }
@@ -82,6 +83,7 @@
       this.canvas.attr("height", this.height);
       this.ctx = this.canvas[0].getContext("2d");
       this.objs = [];
+      this.removedObjs = [];
 
       if (!autoRefresh)
         return;
@@ -100,6 +102,13 @@
       this.drawObjs();
     };
 
+    Canvas.prototype.drawObjsFromVars = function(event, objs) {
+      objs.forEach(function(value) {
+        //ahem...
+        value.draw(cont.canvasStatic.ctx);
+      });
+    }
+
     Canvas.prototype.drawObjs = function() {
       var self = this;
       var i = 0;
@@ -111,9 +120,13 @@
           value.draw(self.ctx);
         i++;
       });
+      var removedItems = []
       toBeRemoved.forEach(function(value) {
-        self.objs.splice(value, 1);
+        var removed = self.objs.splice(value, 1);
+        removedItems.push(removed[0]);
       });
+      if (removedItems.length > 0)
+        $("body").trigger("objRemoved", [removedItems]);
     };
 
     Canvas.prototype.clear = function() {
@@ -143,9 +156,10 @@
     };
 
     CircleDown.prototype.draw = function(ctx) {
-      this.circle.radius *= this.decreaseRate;
       if (this.circle.radius < 2.5)
         this.disappear = true;
+      else
+        this.circle.radius *= this.decreaseRate;
       this.circle.draw(ctx);
     };
 
@@ -155,7 +169,9 @@
   <title>maps!</title>
 </head>
 <body style="background-color: black">
-  <canvas style="position: absolute" id="canvas1"></canvas>
-  <canvas id="canvas2"></canvas>
+  <div>
+    <canvas style="position: absolute" id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+  </div>
 </body>
 </html>
