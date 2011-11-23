@@ -19,8 +19,8 @@
       // $("body").bind("getNewHeatPoints", $.proxy(self, "getHeatPoints"));
 
       self.getHeatPoints();
-      // self.getWorld();
-      $("body").bind("objRemoved", self.canvasStatic.drawObjsFromVars);
+      self.getWorld();
+      // $("body").bind("objRemoved", self.canvasStatic.drawObjsFromVars);
     };
 
     //Gets the world data points and draws them on the canvas.
