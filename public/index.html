@@ -9,10 +9,50 @@
   </script>
   <title>World In A Canvas</title>
 </head>
+<style>
+  body {
+    color: #BBB;
+    font-size: 15px;
+  }
+  .comments {
+    width: 100%;
+    margin: 0px 30px;
+  }
+  .comments div {
+    float: left;
+    margin: 0px 20px;
+  }
+  .first {
+    width: 30%;
+  }
+  .second {
+    width: 35%;
+  }
+  .links {
+    width: 10%;
+  }
+  p {
+    margin:0px;
+  }
+  a:hover, a:visited, a:active, a:link {
+    color: #BBB;
+  }
+</style>
 <body style="background-color: black">
   <div>
     <canvas style="position: absolute" id="canvas1"></canvas>
     <canvas id="canvas2"></canvas>
+  </div>
+  <div class="comments">
+    <div class="first">
+      <p>What you can do with a canvas in 100 lined of code!</p>
+      <p>This is done purely with canvas there are no images. The map is generated from the data.</p>
+    </div>
+    <div class="second">The data presented is the world's population from 2010 (taken from Google). The darker the point the larger the population is. This can easily be changed to show live data.</div>
+    <div class="links">
+      <p><a href="https://github.com/hellonoam/world-in-a-canvas">get the code</a></p>
+      <p>created by <a href="http://www.twitter.com/hellonoam">me</a></p>
+    </div>
   </div>
 </body>
 </html>
