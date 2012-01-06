@@ -14,6 +14,10 @@
     color: #BBB;
     font-size: 15px;
   }
+  .wrapper {
+    margin: 0px auto;
+    width: 1080px;
+  }
   .comments {
     width: 100%;
     margin: 0px 30px;
@@ -39,14 +43,14 @@
   }
 </style>
 <body style="background-color: black">
-  <div>
+  <div class="wrapper">
     <canvas style="position: absolute" id="canvas1"></canvas>
     <canvas id="canvas2"></canvas>
   </div>
   <div class="comments">
     <div class="first">
-      <p>What you can do with a canvas in 100 lined of code!</p>
-      <p>This is done purely with the html5 canvas tag, there are no images. The map is generated from the data.</p>
+      <p>An Example of how powerful html5 is.</p>
+      <p>The map and the data shown are generated using the html5 canvas tag. All in ~100 lines of code!</p>
     </div>
     <div class="second">The data presented is the world's population from 2010 (taken from Google). The darker the point the larger the population. This can easily be changed to show live data.</div>
     <div class="links">
