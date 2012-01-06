@@ -2,4 +2,6 @@ This is an example use of html5 canvas.
 The world is generated using data about population from google.
 After the world is created another canvas (on top of the world) shows a heat map of whatever! 
 
+The logic is in public/worldInACanvas.js
+
 It's really easy to play around with the code, feel free to use it to present your own data in an amazing way 
